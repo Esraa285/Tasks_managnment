@@ -3,7 +3,7 @@ import React from 'react'
 export default function Projects() {
 
   return <>
-      <div className='mx-10 mt-10'>
+      <div className='mx-15 my-25'>
          <div className=' flex  justify-around '> 
             <main className="flex-1 p-8 bg-slate-50">
          

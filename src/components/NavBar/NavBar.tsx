@@ -4,10 +4,10 @@ import React from 'react';
 
 export default function NavBar() {
   return (
-    <div className="flex h-screen  bg-slate-50 font-sans antialiased overflow-hidden">
+    <div className="flex  bg-slate-50 font-sans antialiased overflow-hidden">
       
      
-      <aside className="w-50 bg-white border-r border-gray-100 flex flex-col justify-between p-4 h-full">
+      <aside className="w-50 bg-white h-screen border-gray-100 flex flex-col justify-between p-4 ">
         
 
         <div className="flex flex-col gap-8">
@@ -108,8 +108,6 @@ export default function NavBar() {
             </div>
           </div>
         </header>
-
-
        
       </div>
 
