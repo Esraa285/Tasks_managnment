@@ -27,7 +27,7 @@ const handler = NextAuth({
             id: payload.id || payload.user?.id, 
             user: payload.user,
             accessToken: payload.token,          
-          }
+          }as any;
         } else {
     
           throw new Error(payload.message || "Invalid email or password");
