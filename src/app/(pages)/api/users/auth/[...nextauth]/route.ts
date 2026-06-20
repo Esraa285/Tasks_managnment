@@ -40,22 +40,24 @@ const handler = NextAuth({
     error: "/login"
   },
   secret: process.env.SECRET_KEY,
+
+
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.user = (user as any).user;
-        token.accessToken = (user as any).token; 
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user = token.user as any;
-        (session as any).accessToken = token.accessToken;
-      }
-      return session;
-    },
+  async jwt({ token, user }) {
+    if (user) {
+      token.accessToken = (user as any).accessToken; 
+      token.id = user.id;
+    }
+    return token;
+  },
+  async session({ session, token }) {
+    if (session.user) {
+      (session.user as any).id = token.id;
+      (session.user as any).accessToken = token.accessToken;
+    }
+    return session;
   }
+}
 });
 
 export { handler as GET, handler as POST }

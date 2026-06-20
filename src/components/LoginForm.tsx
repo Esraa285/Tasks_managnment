@@ -4,8 +4,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import {  z } from 'zod';
+import { useRouter } from "next/navigation";
 import { signIn } from 'next-auth/react';
+import toast from 'react-hot-toast';
+import { SignIndata } from '@/actions/actions';
 
 
 const loginSchema = z.object({
@@ -17,31 +20,47 @@ const loginSchema = z.object({
   rememberMe: z.boolean().default(false),
 });
     
-type LoginFormData = z.infer<typeof loginSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>;
+
 
 export default function LoginForm() {
-  const [apiError, setApiError] = useState<string | null>(null);
 
 const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver:zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
       rememberMe: false,
     },
   })
-  const onSubmit = async (data: LoginFormData) =>{
-   
-    const response = await signIn( 'credentials',{
-      email: data.email,
-      password: data.password,
-      callbackUrl: '/Projects',
-      redirect: false
+const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
-    })
-    console.log(data)
+  const loginData = async function onSubmit(data: LoginFormData){
+     setIsLoading(true); 
+  
+    const result = await SignIndata(data);
 
-  };
+  setIsLoading(false);
+
+  if (result.success) {
+
+    const token = result.data?.access_token;
+    
+    if (token) {
+      const days = 7;
+      const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+      document.cookie = `user-token=${token}; expires=${expires}; path=/; SameSite=Strict; Secure`;
+    }
+
+    toast.success("Welcome back!");
+    router.push('/projects'); 
+  } else {
+
+    toast.error(result.error || "Login failed");
+  }
+};
+
 
   return (
     <>
@@ -52,13 +71,10 @@ const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>
             Create Your WorkSpace
           </h2>
 
-          {apiError && (
             <div className="mt-4 p-2 bg-red-100 text-red-600 text-sm text-center rounded-md font-medium">
-              {apiError}
             </div>
-          )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="p-3">
+          <form onSubmit={handleSubmit(loginData)} className="p-3">
             
             <div>
               <label htmlFor="email" className="block text-xs font-sans text-gray-400 mt-5">
@@ -89,7 +105,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>
                 
                 <div className="flex justify-between items-center w-full rounded-md bg-blue-100 mt-1 p-2 placeholder:text-gray-400 text-base text-gray-500 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6">
                   <input
-                    {...register("password")} // ربط الحقل بـ react-hook-form
+                    {...register("password")} 
                     id="password"
                     type="password"
                     placeholder="password"
@@ -133,7 +149,7 @@ const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>
 
               <p className="text-center text-xs text-gray-500 mt-2">
                 Don’t have an account?{' '}
-                <Link href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500 hover:underline">
+                <Link href="/signup"   className="font-semibold text-indigo-600 hover:text-indigo-500 hover:underline">
                   Sign up
                 </Link>
               </p>

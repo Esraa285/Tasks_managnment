@@ -1,38 +1,164 @@
+import { getProjects } from '@/actions/actions';
+import CreatProjectButton from '@/components/Buttons/CreatProject'
+import Login from '@/components/Buttons/Login';
+import Nav from '@/components/nav/nav'
+import ProjectCard from '@/components/ProjectCard/ProjectCard'
 import React from 'react'
 
-export default function Projects() {
+export default async function Projects() {
 
-  return <>
-      <div className='mx-15 my-25'>
-         <div className=' flex  justify-around '> 
-            <main className="flex-1 p-8 bg-slate-50">
-         
-     
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <p className="text-xs font-bold text-gray-400 tracking-wider uppercase">
-                Projects &gt; <span className="text-gray-500">Add New Project</span>
-              </p>
-              <h1 className="text-3xl font-bold text-slate-900 mt-1">Add New Project</h1>
-            </div>
-           
-            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-md shadow-blue-600/10 transition-all">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="8" cy="7" r="4" />
-                <line x1="20" y1="8" x2="20" y2="14" />
-                <line x1="23" y1="11" x2="17" y2="11" />
-              </svg>
-              Invite Member
-            </button>
-          </div>
+  const result = await getProjects();
 
-          <div className="bg-white rounded-2xl border border-gray-100 p-6 max-w-4xl shadow-sm">
-             <p className="text-gray-400 text-sm">Initialize New Project Form...</p>
-          </div>
-         </main>
-         </div>
+  
+  if (!result.success) {
+  if (result.error === "SESSION_EXPIRED") {
+    return (
+      <div className="mt-10 flex flex-col justify-center items-center gap-4">
+        <div className="p-4 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-sm font-medium">
+          🔒 Your session has expired. Please log in again to access your projects.
+        </div>
+        <Login />
       </div>
+    );
+  } else {
+    return (
+      <div className="mt-10 flex flex-col justify-center items-center p-8 max-w-md mx-auto text-center">
+        <div className="p-3 bg-red-50 rounded-full text-red-500 mb-4">
+        </div>
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Failed to load projects</h3>
+        <p className="text-sm text-gray-500 mb-6">
+          We couldn't fetch your data right now. {result.error || "Please check your connection and try again."}
+        </p>
+      </div>
+    );
+  }
+}
 
+  const projects = result.data || [];
+  console.log(projects);
+  
+
+  return(<>
+  {projects.length > 0 ?( <div>
+
+           <div className=" mt-3 flex justify-between">
+
+            <div>
+            <h2 className="text-2xl fw-bolder ">Projects</h2>
+            <p className="text-[#434654]">Manage and curate your projects</p>
+               </div>
+
+               <div>
+                <CreatProjectButton/>
+               </div>
+
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project: any) => (
+            <ProjectCard
+              key={project.id}
+              name={project.name}
+              description={project.description || "No description"}
+              created_at={project.created_at}
+            />
+          ))}
+          </div>
+         </div>):
+
+         (<div className="w-full max-w-2xl mx-auto mt-10 sm:my-10 p-6 sm:p-0 text-center ">
+
+      <div className="flex justify-center items-center">
+        <svg width="288" height="288" viewBox="0 0 288 288" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_15_619)">
+<rect width="288" height="288" rx="8" fill="#F1F3FF"/>
+<g opacity="0.1">
+<rect width="288" height="288" fill="url(#paint0_linear_15_619)"/>
+<rect width="288" height="288" fill="url(#paint1_linear_15_619)"/>
+</g>
+<g filter="url(#filter0_d_15_619)">
+<rect x="197.62" y="42.64" width="48" height="48" rx="4" transform="rotate(-5.99997 197.62 42.64)" fill="white" shape-rendering="crispEdges"/>
+<path d="M224.993 73.4727L215.31 67.4518L216.821 66.0361L224.726 70.9366L231.44 64.4996L233.212 65.5703L224.993 73.4727ZM224.465 68.4503L214.782 62.4294L223.001 54.527L232.684 60.5479L224.465 68.4503ZM224.198 65.9143L229.452 60.8876L223.268 57.0631L218.015 62.0897L224.198 65.9143Z" fill="#0052CC"/>
+</g>
+<g filter="url(#filter1_d_15_619)">
+<rect x="44.6001" y="196.27" width="40" height="40" rx="4" transform="rotate(12 44.6001 196.27)" fill="white" shape-rendering="crispEdges"/>
+<path d="M52.065 227.002C51.4618 226.874 50.9965 226.558 50.6692 226.054C50.3418 225.55 50.2422 224.996 50.3704 224.393L53.2188 210.992C53.3193 210.52 53.6096 210.236 54.0896 210.142C54.5696 210.048 54.938 210.199 55.1947 210.595L56.9278 213.263L55.3266 214.303L55.8658 215.133L57.4669 214.093L59.4696 217.177L57.8684 218.217L58.4075 219.047L60.0087 218.007L62.0113 221.091L60.4101 222.131L60.9493 222.961L62.5505 221.921L64.5531 225.005L62.9519 226.045L63.4911 226.875L65.0923 225.835L66.6327 228.208C66.8895 228.603 66.8773 229.001 66.5963 229.401C66.3153 229.801 65.9384 229.951 65.4656 229.851L52.065 227.002ZM53.4712 224.234L61.5898 225.96L55.1969 216.116L53.4712 224.234Z" fill="#737685"/>
+</g>
+<rect x="96" y="96" width="96" height="96" rx="12" fill="#D7E2FF"/>
+<g filter="url(#filter2_dd_15_619)">
+<rect x="96" y="96" width="96" height="96" rx="12" fill="white" fill-opacity="0.01" shape-rendering="crispEdges"/>
+</g>
+<path d="M131.837 165.154L131.5 162.538L137.952 144.74C138.288 145.035 138.637 145.268 138.998 145.44C139.358 145.611 139.731 145.753 140.115 145.865L133.817 163.298L131.837 165.154ZM156.163 165.154L154.183 163.298L147.885 145.865C148.269 145.753 148.642 145.611 149.002 145.44C149.363 145.268 149.712 145.035 150.048 144.74L156.5 162.538L156.163 165.154ZM144 141.596C142.269 141.596 140.795 140.987 139.577 139.769C138.359 138.551 137.75 137.077 137.75 135.346C137.75 133.721 138.259 132.361 139.276 131.267C140.294 130.172 141.452 129.519 142.75 129.308V122.846H145.25V129.308C146.548 129.519 147.706 130.172 148.724 131.267C149.741 132.361 150.25 133.721 150.25 135.346C150.25 137.077 149.641 138.551 148.423 139.769C147.205 140.987 145.731 141.596 144 141.596ZM144 139.096C145.029 139.096 145.911 138.728 146.647 137.993C147.382 137.257 147.75 136.375 147.75 135.346C147.75 134.317 147.382 133.435 146.647 132.7C145.911 131.964 145.029 131.596 144 131.596C142.971 131.596 142.089 131.964 141.353 132.7C140.618 133.435 140.25 134.317 140.25 135.346C140.25 136.375 140.618 137.257 141.353 137.993C142.089 138.728 142.971 139.096 144 139.096Z" fill="#003D9B"/>
+</g>
+<defs>
+<filter id="filter0_d_15_619" x="195.62" y="36.6227" width="56.7544" height="56.7544" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_15_619"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_15_619" result="shape"/>
+</filter>
+<filter id="filter1_d_15_619" x="34.2837" y="195.27" width="51.4424" height="51.4424" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_15_619"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_15_619" result="shape"/>
+</filter>
+<filter id="filter2_dd_15_619" x="76" y="96" width="136" height="136" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="6" operator="erode" in="SourceAlpha" result="effect1_dropShadow_15_619"/>
+<feOffset dy="8"/>
+<feGaussianBlur stdDeviation="5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.0156863 0 0 0 0 0.105882 0 0 0 0 0.235294 0 0 0 0.05 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_15_619"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="5" operator="erode" in="SourceAlpha" result="effect2_dropShadow_15_619"/>
+<feOffset dy="20"/>
+<feGaussianBlur stdDeviation="12.5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.0156863 0 0 0 0 0.105882 0 0 0 0 0.235294 0 0 0 0.05 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow_15_619" result="effect2_dropShadow_15_619"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_15_619" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_15_619" x1="0" y1="144" x2="288" y2="144" gradientUnits="userSpaceOnUse">
+<stop offset="0.0416667" stop-color="#003D9B"/>
+<stop offset="0.0416667" stop-color="#003D9B" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_15_619" x1="144" y1="0" x2="144" y2="288" gradientUnits="userSpaceOnUse">
+<stop offset="0.0416667" stop-color="#003D9B"/>
+<stop offset="0.0416667" stop-color="#003D9B" stop-opacity="0"/>
+</linearGradient>
+<clipPath id="clip0_15_619">
+<rect width="288" height="288" rx="8" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+
+      </div>
+          <div className = "mt-4">
+            <h2 className="  fw-semibold text-3xl ">No Project</h2>
+          <div className="w-75 f mx-auto">
+            <p className=" text-gray-500 mt-2 text-sm">You don’t have any projects yet.Start by defining 
+                                               your first architectural workspace to begin tracking
+                                                   tasks and epics.</p>
+          </div>
+          </div>
+      <div className=" flex justify-center items-center mt-4">
+            <CreatProjectButton/>
+      </div>
+      </div>
+         )}
+          
   </>
+);
 }

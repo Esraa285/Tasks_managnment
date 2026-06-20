@@ -1,3 +1,4 @@
+import Login from '@/components/Buttons/Login'
 import Link from 'next/link'
 import React from 'react'
 
@@ -23,9 +24,8 @@ export default function Home() {
 
 
   <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto">
-    <Link href="/login" className="w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all duration-200">
-      Log In
-    </Link>
+   
+   <Login/>
     <Link href="/signup" className="w-full sm:w-auto text-center bg-black border border-black hover:bg-blue-400 text-slate-200 font-semibold px-8 py-3.5 rounded-xl transition-all duration-200">
       Create New Account
     </Link>

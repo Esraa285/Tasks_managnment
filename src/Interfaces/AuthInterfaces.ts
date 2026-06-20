@@ -65,3 +65,13 @@ export interface IdentityData {
   phone_verified: boolean
   sub: string
 }
+
+export type Root = ProjectCardInerface[]
+
+export interface ProjectCardInerface {
+  id: string
+  name: string
+  description: string
+  created_by: string
+  created_at: string
+}

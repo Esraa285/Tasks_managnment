@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar/NavBar";
+import SideBare from "@/components/SideBar/SideBare";
 
 
 const geistSans = Geist({
@@ -27,11 +28,15 @@ export default function RootLayout({
   return (
   <html lang="en">
       <body className="overflow-x-hidden">
-          <NavBar/>
-          
+        
+         <div className=" flex">
+           <SideBare/>
           <div className="container mx-auto ">
-            {children}
-
+             <div>
+                <NavBar/>
+                  {children}
+            </div>
+          </div>
           </div>
       </body>
     </html>

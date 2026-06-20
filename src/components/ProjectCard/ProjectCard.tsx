@@ -1,0 +1,49 @@
+'use client'
+import { ProjectCardInerface } from '@/Interfaces/AuthInterfaces';
+import Link from 'next/link';
+import React from 'react'
+
+export default function ProjectCard({ name, description, created_at }: ProjectCardInerface) {
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return ""; 
+      
+      return date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    } catch {
+      return "";
+    }
+  };
+
+
+  return (
+    <Link href="/projectEpics">
+   <div className=" mt-5 max-w-md w-90 bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[220px]">
+      <div className="">
+        <h3 className="text-[#0f2d59] text-xl font-bold tracking-wide mb-3">
+         {name}
+        </h3>
+        <p className="text-[#5c6f84] text-[15px] leading-relaxed font-normal">
+        {description || "No description provided."}
+        </p>
+      </div>
+
+      <div className="mt-6 pt-4 border-t border-gray-50 flex justify-between items-center text-xs font-semibold tracking-wider">
+        <span className="text-[#8a99ad] uppercase">
+          Created At
+        </span>
+        <span className="text-[#4a5568] text-sm font-medium">
+          {formatDate(created_at)}
+        </span>
+      </div>
+
+    </div>
+      </Link>
+  );
+}
