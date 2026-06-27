@@ -4,15 +4,12 @@ import { ProjectFormData } from "@/components/ProjectForm/AddProject";
 import { SignUpFormData } from "@/components/SignUpForm";
 import { cookies } from "next/headers";
 
-
+    const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
+    const SECRET_KEY= process.env.NEXT_PUBLIC_SECRET_KEY;
+  
+    
 
  export async function SignUpdata(data:SignUpFormData) {
-
-    const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
-    console.log(BASE_URL)
-
-    const SECRET_KEY= process.env.NEXT_PUBLIC_SECRET_KEY;
-    console.log(SECRET_KEY)
 
    try {
     const response = await fetch(`${BASE_URL}/auth/v1/signup`, {
@@ -39,13 +36,10 @@ import { cookies } from "next/headers";
   } 
   }
 
-
-
   export async function SignIndata(data:LoginFormData) {
 
-    const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
-
-    const SECRET_KEY= process.env.NEXT_PUBLIC_SECRET_KEY;
+     const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
 
    try {
     const response = await fetch(`${BASE_URL}/auth/v1/token?grant_type=password`, {
@@ -75,19 +69,14 @@ import { cookies } from "next/headers";
   }
   }
 
-
-
-
    export async function AddProject(data:ProjectFormData) {
 
-    const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
-
-    const SECRET_KEY= process.env.NEXT_PUBLIC_SECRET_KEY;
-
+     const cookieStore = await cookies(); 
+      const TOKEN = cookieStore.get("user-token")?.value;
    try {
     const cookieStore = await cookies(); 
-    const accessToken = cookieStore.get("user-token")?.value;
-    if (!accessToken) {
+    const TOKEN = cookieStore.get("user-token")?.value;
+    if (!TOKEN) {
       return { success: false, error: "SESSION_EXPIRED" };
     }
 
@@ -96,7 +85,7 @@ import { cookies } from "next/headers";
       headers: {
         "Content-Type": "application/json",
         "apikey": SECRET_KEY || "", 
-        "Authorization": `Bearer ${accessToken}`
+        "Authorization": `Bearer ${TOKEN}`
       },
      body: JSON.stringify({
       name: data.name,
@@ -109,15 +98,12 @@ import { cookies } from "next/headers";
     throw new Error(result.message || result.error_description || "Failed to create project");
   }
 
-  /* i not understant this code*/
-
    const text = await response.text().catch(() => ""); 
   const result = text ? JSON.parse(text) : null;
 if (result) {
-    // Supabase يرجع البيانات في مصفوفة [ { id: 1, name: '...' } ]
     return { success: true, data: result[0] || result };
   } else {
-    // إذا تمت الإضافة بنجاح لكن السيرفر لم يرسل داتا في الـ Body
+
     return { success: true, data: { message: "Project created successfully" } };
   }
 }catch (error: any) {
@@ -126,19 +112,14 @@ if (result) {
 }
    }
 
-
    export async function getProjects() {
 
-    const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
-
-    const SECRET_KEY= process.env.NEXT_PUBLIC_SECRET_KEY;
+     const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
 
   try {
 
-      const cookieStore = await cookies(); 
-      const accessToken = cookieStore.get("user-token")?.value;
-
-      if (!accessToken) {
+      if (!TOKEN) {
         return { success: false, error: "SESSION_EXPIRED" };
       }
 
@@ -146,7 +127,7 @@ if (result) {
         headers: {
           "Content-Type": "application/json",
           "apikey": SECRET_KEY || "", 
-          "Authorization": `Bearer ${accessToken}`
+          "Authorization": `Bearer ${TOKEN}`
         }
       });
 
@@ -169,4 +150,79 @@ if (result) {
       console.error("Get Projects Error:", error.message);
       return { success: false, error: error.message || "Failed to load projects" };
     };
+}
+
+
+export async function fetchProjects(page: number , limit: number) {
+
+
+  const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+    const offset = (page - 1) * limit;
+
+   try {
+    const response = await fetch(`${BASE_URL}/rest/v1/rpc/get_projects?limit=${limit}&offset=${offset}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+         'Authorization': `Bearer ${TOKEN}`,
+           'Prefer': 'count=exact'
+      }
+    });
+
+    console.log(response, "response");
+    
+
+   if (!response.ok) {
+    throw new Error('Failed to load projects');
+  }
+
+  const data = await response.json();
+
+  console.log(data, "data");
+
+  const contentRange = response.headers.get('content-range');
+  let totalCount = 0;
+  if (contentRange) {
+    const parts = contentRange.split('/');
+    totalCount = parseInt(parts[1], 10) || 0;
+  }
+
+  return { data, totalCount };
+}
+catch (error) {
+    
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+}
+
+export async function fetchEpicsProject(projectId: string ,page: number , limit: number) {
+
+   const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+      const offset = (page - 1) * limit;
+ 
+  try {
+   
+    const response = await fetch(`${BASE_URL}/rest/v1/project_epics?project_id=eq.${projectId}&limit=${limit}&offset=${offset}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+        "Prefer": "count=exact"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load project epics');
+    }
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error("Error fetching epics:", error);
+    throw error;
+  }
 }

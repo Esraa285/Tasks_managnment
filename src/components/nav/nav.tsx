@@ -1,39 +1,83 @@
 "use client";
 import React from 'react';
 import Link from "next/link";
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 
-export default function Nav() {
-    const pathname = usePathname();
+export default function NavProject({ projectName }: { projectName?: string }) {
+  const pathname = usePathname();
+  const params = useParams();
+  const projectId = params?.projectId as string;
 
-   return(
-     <nav  className="flex items-center space-x-2 text-sm font-semibold tracking-wide my-4 p-3">
+
+  const isAddProjectPage = pathname === "/projects/addproject";
+  const isProjectDashboard = pathname === `/project/${projectId}`;
+  const isEditPage = pathname === `/project/${projectId}/edit`;
+  const isEpicsPage = pathname === `/project/${projectId}/epics`;
+  const isTasksPage = pathname === `/project/${projectId}/tasks`;
+  const isMembersPage = pathname === `/project/${projectId}/members`;
+
+  return (
+    <nav className="flex items-center space-x-2 text-xs font-bold tracking-wider my-4 p-3 bg-gray-50/40 rounded-xl select-none">
       
       <Link
-       href="/projects"
-                className={`text-sm font-bold uppercase transition-colors duration-200 ${
-                    pathname === "/projects" 
-                        ? "text-[#0f52ba]" 
-                        : "text-gray-400 hover:text-gray-600"
-                }`}
-            >
+        href="/projects"
+        className={`uppercase transition-colors duration-250 ${
+          pathname === "/projects" ? "text-[#0f52ba]" : "text-gray-450 hover:text-gray-650"
+        }`}
+      >
         Projects
       </Link>
 
-      <span className="text-gray-400 font-normal select-none">›</span>
+      {isAddProjectPage && (
+        <>
+          <span className="text-gray-400 font-normal">›</span>
+          <span className="text-[#0f52ba] uppercase">Add New Project</span>
+        </>
+      )}
 
-      <Link 
-        href="/projects/addproject" 
-                className={`text-sm font-bold uppercase tracking-wider transition-colors duration-200 ${
-                    pathname === "/projects/addproject"
-                        ? "text-[#0f52ba]"
-                        : "text-gray-400 hover:text-gray-600"
-                }`}
-            >
-        Add New Project
-      </Link>
+      {projectId && (
+        <>
+          <span className="text-gray-400 font-normal">›</span>
+          
+          <Link
+            href={`/project/${projectId}`}
+            className={`uppercase transition-colors duration-250 ${
+              isProjectDashboard ? "text-[#0f52ba]" : "text-gray-450 hover:text-gray-650"
+            }`}
+          >
+            {projectName || "Project Title"}
+          </Link>
+        </>
+      )}
+
+      {isEditPage && (
+        <>
+          <span className="text-gray-400 font-normal">›</span>
+          <span className="text-[#0f52ba] uppercase">Edit</span>
+        </>
+      )}
+
+      {isEpicsPage && (
+        <>
+          <span className="text-gray-400 font-normal">›</span>
+          <span className="text-[#0f52ba] uppercase">Epics</span>
+        </>
+      )}
+
+      {isTasksPage && (
+        <>
+          <span className="text-gray-400 font-normal">›</span>
+          <span className="text-[#0f52ba] uppercase">Tasks</span>
+        </>
+      )}
+
+      {isMembersPage && (
+        <>
+          <span className="text-gray-400 font-normal">›</span>
+          <span className="text-[#0f52ba] uppercase">Members</span>
+        </>
+      )}
 
     </nav>
-  
-   )
+  );
 }

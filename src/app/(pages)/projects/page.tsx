@@ -1,8 +1,11 @@
+
 import { getProjects } from '@/actions/actions';
 import CreatProjectButton from '@/components/Buttons/CreatProject'
 import Login from '@/components/Buttons/Login';
 import Nav from '@/components/nav/nav'
+import PaginButton from '@/components/PaginationButton/PaginButton';
 import ProjectCard from '@/components/ProjectCard/ProjectCard'
+import Link from 'next/link';
 import React from 'react'
 
 export default async function Projects() {
@@ -30,6 +33,7 @@ export default async function Projects() {
           We couldn't fetch your data right now. {result.error || "Please check your connection and try again."}
         </p>
       </div>
+     
     );
   }
 }
@@ -39,31 +43,36 @@ export default async function Projects() {
   
 
   return(<>
-  {projects.length > 0 ?( <div>
+      {projects.length > 0 ?( <div>
 
-           <div className=" mt-3 flex justify-between">
+           <div className=" mt-3 flex justify-between p-4">
 
             <div>
             <h2 className="text-2xl fw-bolder ">Projects</h2>
             <p className="text-[#434654]">Manage and curate your projects</p>
                </div>
 
-               <div>
+               <div className='me-10'>
                 <CreatProjectButton/>
                </div>
 
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+       
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 p-3">
           {projects.map((project: any) => (
+
             <ProjectCard
               key={project.id}
+              id= {project.id}
               name={project.name}
               description={project.description || "No description"}
               created_at={project.created_at}
             />
           ))}
           </div>
+            <PaginButton/>
+             
          </div>):
 
          (<div className="w-full max-w-2xl mx-auto mt-10 sm:my-10 p-6 sm:p-0 text-center ">
@@ -158,6 +167,7 @@ export default async function Projects() {
       </div>
       </div>
          )}
+          
           
   </>
 );

@@ -53,6 +53,7 @@ const [isLoading, setIsLoading] = useState(false)
       document.cookie = `user-token=${token}; expires=${expires}; path=/; SameSite=Strict; Secure`;
     }
 
+    
     toast.success("Welcome back!");
     router.push('/projects'); 
   } else {
@@ -64,15 +65,13 @@ const [isLoading, setIsLoading] = useState(false)
 
   return (
     <>
-      <div className="flex justify-center items-center mt-6">
-        <div className="min-w-md px-3 py-6 bg-white rounded-2xl shadow-2xl">
+      <div className="flex justify-center items-center mt-6 p-10">
+        <div className="min-w-md px-3 py-10 bg-white rounded-2xl shadow-2xl">
           
           <h2 className="text-black text-center text-2xl font-semibold">
             Create Your WorkSpace
           </h2>
 
-            <div className="mt-4 p-2 bg-red-100 text-red-600 text-sm text-center rounded-md font-medium">
-            </div>
 
           <form onSubmit={handleSubmit(loginData)} className="p-3">
             

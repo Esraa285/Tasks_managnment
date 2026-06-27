@@ -1,23 +1,20 @@
 import NavProject from '@/components/nav/nav'
-import Nav from '@/components/nav/nav'
-import AddProjecrForm from '@/components/ProjectForm/AddProject'
 import ProjectTitle from '@/components/ProjectTitle/Project-Title'
 import React from 'react'
 
-export default function AddProject() {
+export default function ProjectEdit() {
 
 
 
-  
+
   return (
-    <div className=''>
+  <div className=''>
           <div className= " ">
              <NavProject/>
-             <div className='flex justify-between'>
-                   <h1 className="text-3xl font-bold text-slate-900 mt-4">Add New Project</h1>
-                    <ProjectTitle/>
-             </div>
-             
+           <div className='flex justify-between'>
+              <h1 className="text-3xl font-bold text-slate-900 mt-4">Edit Project</h1>
+              <ProjectTitle/>
+           </div>
             </div>
          <div className=' flex justify-around '> 
        

@@ -1,10 +1,17 @@
 'use client'
 import Link from 'next/link'
+import { useParams } from 'next/navigation';
 import React from 'react'
 
 export default function SideBare() {
+
+
+  const params = useParams();
+  const projectId = params?.projectId as string;
+
+
   return (
-  <aside className="w-50 bg-white h-screen border-gray-100 flex flex-col justify-between p-4 ">
+  <aside className=" bg-white h-screen border-gray-100 flex flex-col justify-between p-6">
         
 
         <div className="flex flex-col gap-8">
@@ -22,14 +29,14 @@ export default function SideBare() {
 
           <nav className="flex flex-col gap-1">
             
-            <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-medium text-sm transition-colors">
+            <Link href="/projects" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-medium text-sm transition-colors">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
               </svg>
               Projects
             </Link>
 
-            <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium text-sm transition-colors">
+            <Link href={`/project/${projectId}/epics`} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium text-sm transition-colors">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 2 7 12 12 22 7 12 2" />
                 <polyline points="2 17 12 22 22 17" />
@@ -68,7 +75,8 @@ export default function SideBare() {
         </div>
 
 
-        <div className="flex flex-col gap-1 border-t border-gray-100 pt-4">
+       <div className='mt-auto'>
+        <div className="flex flex-col gap-1 border-t border-gray-100 ">
       
           <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium text-sm transition-colors w-full text-left">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -87,6 +95,7 @@ export default function SideBare() {
             Logout
           </button>
         </div>
+       </div>
       </aside>
   )
 }
