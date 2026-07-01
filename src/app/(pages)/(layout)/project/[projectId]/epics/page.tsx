@@ -1,6 +1,7 @@
 import { fetchEpicsProject } from '@/actions/actions';
+import NavProject from '@/components/nav/nav';
 import React from 'react'
-import NavigateProject from '../page';
+
 
 export default async function ProjectEpicsPage({ params }: { params: { projectId: string } }) {
 
@@ -26,7 +27,7 @@ export default async function ProjectEpicsPage({ params }: { params: { projectId
 
   return (
    <div>
-     <NavigateProject/>
+     <NavProject/>
      <div className="p-6 max-w-5xl mx-auto">
        
       <div className="mb-6 flex justify-between items-center">

@@ -226,3 +226,87 @@ export async function fetchEpicsProject(projectId: string ,page: number , limit:
     throw error;
   }
 }
+
+export async function UpdateProject(data:ProjectFormData, projectId:string) {
+
+     const cookieStore = await cookies(); 
+      const TOKEN = cookieStore.get("user-token")?.value;
+   try {
+    const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+    if (!TOKEN) {
+      return { success: false, error: "SESSION_EXPIRED" };
+    }
+
+    const response = await fetch(`${BASE_URL}/rest/v1/projects?id=eq.${projectId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`
+      },
+     body: JSON.stringify({
+      name: data.name,
+      description: data.description || null 
+    })
+    });
+    
+    if (!response.ok) {
+    const result = await response.json().catch(() => ({})); 
+    throw new Error(result.message || result.error_description || "Failed to create project");
+  }
+
+   const text = await response.text().catch(() => ""); 
+  const result = text ? JSON.parse(text) : null;
+if (result) {
+    return { success: true, data: result[0] || result };
+  } else {
+
+    return { success: true, data: { message: "Project created successfully" } };
+  }
+}catch (error: any) {
+  console.error("Create Project Error:", error.message);
+  return { success: false, error: error.message || "Failed to initialize project" };
+}
+   }
+
+   
+   export async function getProjectMembers(projectId:string) {
+
+     const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+
+  try {
+
+      if (!TOKEN) {
+        return { success: false, error: "SESSION_EXPIRED" };
+      }
+
+      const response = await fetch(`${BASE_URL}/rest/v1/get_project_members?project_id=eq.${projectId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SECRET_KEY || "", 
+          "Authorization": `Bearer ${TOKEN}`
+        }
+      });
+
+      if (response.status === 401) {
+        return { success: false, error: "SESSION_EXPIRED" };
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch projects Members");
+      }
+
+  
+      const result = await response.json();
+      console.log("Projects from Server:", result);
+      
+      return { success: true, data: result };
+
+    }
+    catch (error: any) {
+      console.error("Get Projects Error:", error.message);
+      return { success: false, error: error.message };
+    };
+}

@@ -29,14 +29,7 @@ export default function RootLayout({
   return (
   <html lang="en">
       <body className="overflow-x-hidden">
-          <div className=" flex">
-             <SideBare/>
-            <div className="container ">
-               
-                  <NavBar/>
-                    {children}
-              </div>
-            </div>
+        {children}
       </body>
     </html>
   );

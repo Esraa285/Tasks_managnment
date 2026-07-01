@@ -1,5 +1,6 @@
 import NavProject from '@/components/nav/nav'
 import Nav from '@/components/nav/nav'
+import AddProjectForm from '@/components/ProjectForm/AddProject'
 import AddProjecrForm from '@/components/ProjectForm/AddProject'
 import ProjectTitle from '@/components/ProjectTitle/Project-Title'
 import React from 'react'
@@ -19,11 +20,11 @@ export default function AddProject() {
              </div>
              
             </div>
-         <div className=' flex justify-around '> 
+         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'> 
        
             <main className="flex-1 p-8 bg-slate-50">
          
-           <AddProjecrForm/>
+           <AddProjectForm/>
          </main>
          </div>
       </div>
