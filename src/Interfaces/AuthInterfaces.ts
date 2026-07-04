@@ -75,3 +75,10 @@ export interface ProjectCardInerface {
   created_by: string
   created_at: string
 }
+// export interface NewEpicInterface {
+//   title: string
+//   description: string
+//   assignee_id: string
+//   project_id: string
+//   deadline: string
+// }

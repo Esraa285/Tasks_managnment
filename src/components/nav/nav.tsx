@@ -13,6 +13,7 @@ export default function NavProject({ projectName }: { projectName?: string }) {
   const isProjectDashboard = pathname === `/project/${projectId}`;
   const isEditPage = pathname === `/project/${projectId}/edit`;
   const isEpicsPage = pathname === `/project/${projectId}/epics`;
+   const isNewEpicsPage = pathname === `/project/${projectId}/epics/new`;
   const isTasksPage = pathname === `/project/${projectId}/tasks`;
   const isMembersPage = pathname === `/project/${projectId}/members`;
 
@@ -61,6 +62,15 @@ export default function NavProject({ projectName }: { projectName?: string }) {
         <>
           <span className="text-gray-400 font-normal">›</span>
           <span className="text-[#0f52ba] uppercase">Epics</span>
+        </>
+      )}
+     
+       {isNewEpicsPage && (
+        <>
+         <span className="text-gray-400 font-normal">›</span>
+          <span className="text-gray-400 uppercase">Epics</span>
+          <span className="text-gray-400 font-normal">›</span>
+          <span className="text-[#0f52ba] uppercase">NewEpic</span>
         </>
       )}
 

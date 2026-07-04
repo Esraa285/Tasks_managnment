@@ -12,7 +12,7 @@ export default function SideBare() {
 
 
   return (
-    <div className= "flex min-h-screen" >
+    <div className= "md:flex min-h-screen hidden" >
   <aside className=" bg-white border-gray-100 flex flex-col justify-between p-6">
         
 

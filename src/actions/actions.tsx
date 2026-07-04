@@ -1,7 +1,9 @@
 'use server'
+import { NewEpic } from "@/components/EpicForm/EpicForm";
 import { LoginFormData } from "@/components/LoginForm";
 import { ProjectFormData } from "@/components/ProjectForm/AddProject";
 import { SignUpFormData } from "@/components/SignUpForm";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
     const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
@@ -296,6 +298,7 @@ if (result) {
 
       if (!response.ok) {
         throw new Error("Failed to fetch projects Members");
+        
       }
 
   
@@ -310,3 +313,54 @@ if (result) {
       return { success: false, error: error.message };
     };
 }
+
+  export async function AddEpic(data:NewEpic, projectId:string) {
+
+   try {
+    const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+    if (!TOKEN) {
+      return { success: false, error: "SESSION_EXPIRED" };
+    }
+
+    const response = await fetch(`${BASE_URL}rest/v1/epics`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`
+      },
+     body: JSON.stringify({
+    title:data.title,
+    description:data.description || null,
+    assignee_id:data.assignee_id || null,
+    project_id : projectId ,
+    deadline: data.deadline || null
+  }as NewEpic)
+    });
+    
+    if (!response.ok) {
+    const result = await response.json().catch(() => ({})); 
+    console.log(result)
+    throw new Error(result.message || result.error_description );
+    
+  }
+
+   const text = await response.text().catch(() => ""); 
+  const result = text ? JSON.parse(text) : null;
+
+
+if (result) {
+  console.log(result)
+    return { success: true, data: result[0] || result };
+   
+  } else {
+console.log(result)
+    return { success: true, data: { message: "Epics created successfully" } };
+  }
+}catch (error: any) {
+  console.error(error.message);
+  console.log(error)
+  return { success: false, error: error.message };
+}
+   }
