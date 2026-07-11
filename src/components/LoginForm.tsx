@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {  z } from 'zod';
 import { useRouter } from "next/navigation";
-import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { SignIndata } from '@/actions/actions';
 
@@ -26,7 +25,7 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginForm() {
 
 const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
-    resolver:zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",

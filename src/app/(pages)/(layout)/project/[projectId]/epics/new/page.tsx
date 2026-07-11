@@ -1,13 +1,9 @@
 import AddNewEpic from "@/components/EpicForm/AddNewEpic";
 import NavProject from "@/components/nav/nav";
-import { resolve } from "path";
+
 import React from "react";
 
-export default async function AddEpic({
-  params,
-}: {
-  params: { projectId: string };
-}) {
+export default async function AddEpic({ params}: {params: { projectId: string };}) {
   const resolvedParams = await params;
   const { projectId } = resolvedParams;
 

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/NavBar/NavBar";
-import SideBare from "@/components/SideBar/SideBare";
-import Layout from "./(layout)/layout";
+
+
 
 
 const geistSans = Geist({
@@ -25,11 +24,15 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>)
+ {
   return (
   <html lang="en">
       <body className="overflow-x-hidden">
-        {children}
+
+   
+          {children}
+
       </body>
     </html>
   );

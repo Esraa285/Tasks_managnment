@@ -13,7 +13,7 @@ export default async function projectmember({
 
   const response = await getProjectMembers(projectId);
  
-  const members = Array.isArray(response) 
+ const members = Array.isArray(response) 
     ? response 
     : (response?.data || response || []);
 

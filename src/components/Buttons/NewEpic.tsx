@@ -5,7 +5,7 @@ import React from "react";
 
 export default function AddNewEpictButton({projectId}: {projectId:string}) {
   return (
-    <button className="flex items-center gap-2 bg-blue-800 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5  shadow-md shadow-blue-600/10 transition-all">
+    <button className="flex items-center gap-2 w-40 bg-blue-800 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5  shadow-md shadow-blue-600/10 transition-all">
       <Link href={`/project/${projectId}/epics/new`} className="flex gap-2">
         <span>
           <svg

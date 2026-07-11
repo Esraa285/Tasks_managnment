@@ -31,12 +31,7 @@ description: z.string().optional().or(z.literal("")),
 
 export type NewEpic = z.infer<typeof epicSchema>;
 
-export default function EpicForm({onSubmit,
-  isLoading,
-  buttonText,
-  onCancel,
-  members = []
-}:{onSubmit: (data: NewEpic) => void;
+export default function EpicForm({onSubmit, isLoading, buttonText, onCancel,members = []}:{onSubmit: (data: NewEpic) => void;
   buttonText: string;
   isLoading: boolean;
   onCancel?: () => void;

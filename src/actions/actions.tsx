@@ -1,9 +1,10 @@
 'use server'
+
 import { NewEpic } from "@/components/EpicForm/EpicForm";
 import { LoginFormData } from "@/components/LoginForm";
 import { ProjectFormData } from "@/components/ProjectForm/AddProject";
 import { SignUpFormData } from "@/components/SignUpForm";
-import { revalidatePath } from "next/cache";
+import { ProjectEpic } from "@/Interfaces/AuthInterfaces";
 import { cookies } from "next/headers";
 
     const BASE_URL= process.env.NEXT_PUBLIC_BASE_URL;
@@ -323,7 +324,7 @@ if (result) {
       return { success: false, error: "SESSION_EXPIRED" };
     }
 
-    const response = await fetch(`${BASE_URL}rest/v1/epics`, {
+    const response = await fetch(`${BASE_URL}/rest/v1/epics`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -339,6 +340,7 @@ if (result) {
   }as NewEpic)
     });
     
+    
     if (!response.ok) {
     const result = await response.json().catch(() => ({})); 
     console.log(result)
@@ -348,6 +350,7 @@ if (result) {
 
    const text = await response.text().catch(() => ""); 
   const result = text ? JSON.parse(text) : null;
+   console.log(result)
 
 
 if (result) {
@@ -364,3 +367,210 @@ console.log(result)
   return { success: false, error: error.message };
 }
    }
+
+
+  export async function getEpicDetails(epicId: string, projectId:string) {
+
+
+     const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+
+  try {
+
+      if (!TOKEN) {
+        return { success: false, error: "SESSION_EXPIRED" };
+      }
+
+      const response = await fetch(`${BASE_URL}/rest/v1/project_epics?project_id=eq.${projectId}&id=eq.${epicId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SECRET_KEY ||"", 
+          "Authorization": `Bearer ${TOKEN}`
+        }
+      });
+
+      if (response.status === 401) {
+        return { success: false, error: "SESSION_EXPIRED" };
+      }
+
+      if (!response.ok) {
+        throw new Error();
+        
+      }
+
+  
+      const result = await response.json();
+      console.log(result);
+      
+          return result && result.length > 0 ? result[0] : null;
+
+    }
+   catch (error: any) {
+
+    console.error("🚨 Database Fetch Error:", error); 
+   
+    return { 
+      success: false, 
+      error: error?.message || "Unknown server error" 
+    };
+  }
+}
+
+export async function updateEpicDetails(epicId: string, updates: Partial<ProjectEpic>) {
+  const cookieStore = await cookies(); 
+  const TOKEN = cookieStore.get("user-token")?.value;
+
+  try {
+    const requestBody: Record<string, any> = {};
+
+    if (updates.title !== undefined) requestBody.title = updates.title;
+    if (updates.description !== undefined) requestBody.description = updates.description;
+    
+    
+    if (updates.deadline !== undefined) {
+      requestBody.deadline = updates.deadline ? updates.deadline : null;
+    }
+
+    if (updates.assignee !== undefined) {
+      requestBody.assignee_id = updates.assignee ? updates.assignee.sub : null;
+    }
+
+    const res = await fetch(`${BASE_URL}/rest/v1/epics?id=eq.${epicId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Failed to update epic: ${errorText}`);
+    }
+
+    const data = await res.json();
+    
+    return data[0]; 
+  } 
+  catch (error) {
+    console.error("🔴 Server Action Error [updateEpicDetails]:", error);
+    throw error;
+  }
+}
+
+export async function AddTask(data:ProjectEpic, projectId:string) {
+
+   try {
+    const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+    if (!TOKEN) {
+      return { success: false, error: "SESSION_EXPIRED" };
+    }
+
+    const response = await fetch(`${BASE_URL}/rest/v1/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`
+      },
+     body: JSON.stringify({
+    title:data.title,
+     project_id : projectId ,
+    epic_id: data.epic_id || null,
+    due_date: data.due_date || null,
+    status: data.status || "TO_DO" ,
+    description:data.description || null,
+    assignee_id: data.assignee?.id || data.assignee?.id || null,
+   
+  })
+    });
+    
+    
+    if (!response.ok) {
+    const result = await response.json().catch(() => ({})); 
+    console.log(result)
+    throw new Error(result.message || result.error_description );
+    
+  }
+
+   const text = await response.text().catch(() => ""); 
+  const result = text ? JSON.parse(text) : null;
+   console.log(result)
+
+
+if (result) {
+  console.log(result)
+    return { success: true, data: result[0] || result };
+   
+  } else {
+console.log(result)
+    return { success: true, };
+  }
+}catch (error: any) {
+  console.error(error.message);
+  console.log(error)
+  return { success: false, error: error.message };
+}
+   }
+
+
+   export async function fetchProjectTask(projectId: string) {
+
+   const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+  try {
+   
+    const response = await fetch(`${BASE_URL}/rest/v1/project_tasks?project_id=eq.${projectId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+        "Prefer": "count=exact"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load project tasks');
+    }
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+}
+
+
+ export async function displayTasksInsideEpic(epicId: string) {
+
+   const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+  try {
+   
+    const response = await fetch(`${BASE_URL}/rest/v1/project_tasks?epic_id=eq.${epicId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load project tasks');
+    }
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+}
+
+
