@@ -42,17 +42,22 @@ const router = useRouter();
   try {
     const result = await AddTask(validatedData, projectId);
  
+   console.log(result);
 
     if (result && result.success) {
+      console.log(result);
+      
       
       toast.success("Task created successfully!");
       
       router.push(`/project/${projectId}/tasks`);
+
     } else {
       toast.error(result?.error || "Failed to create task");
+         console.log(result);
     }
   } catch (error: any) {
-  
+    console.log(error);
     toast.error(error.message || "An unexpected error occurred.");
   } finally {
     setIsLoading(false);

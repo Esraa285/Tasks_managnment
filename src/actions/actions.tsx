@@ -573,4 +573,85 @@ console.log(result)
   }
 }
 
+export async function fetchProjectTaskByStatus(projectId: string, status: string) {
+
+   const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+  try {
+   
+    const response = await fetch(`${BASE_URL}/rest/v1/project_tasks?project_id=eq.${projectId}&status=eq.${status}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load project tasks');
+    }
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+}
+
+export async function fetchProjectTaskListView(projectId: string) {
+
+   const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+  try {
+   
+    const response = await fetch(`${BASE_URL}/rest/v1/project_tasks?project_id=eq.${projectId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load project tasks');
+    }
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+}
+
+export async function displayTaskDetails(projectId: string,task_id: string) {
+
+   const cookieStore = await cookies(); 
+    const TOKEN = cookieStore.get("user-token")?.value;
+  try {
+   
+    const response = await fetch(`${BASE_URL}/rest/v1/project_tasks?project_id=eq.${projectId}&id=eq.${task_id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SECRET_KEY || "", 
+        "Authorization": `Bearer ${TOKEN}`,
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Task not found');
+    }
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error("Failed to load task details", error);
+    throw error;
+  }
+}
+
 

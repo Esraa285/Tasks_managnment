@@ -1,10 +1,19 @@
+'use client'
+
 import { ProjectTask } from '@/Interfaces/AuthInterfaces'
-import React from 'react'
-
-
-
+import React, { useState } from 'react'
+import TaskDetailsCard from './TaskDetailsCard';
 
 export default function EpicTaskCard({tasks}:{tasks: ProjectTask[]}) {
+
+  const [selectedTask, setSelectedTask] = useState<ProjectTask | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoadingTask, setIsLoadingTask] = useState(false);
+
+  const handleOpenTaskDetails = (task: ProjectTask) => {
+    setSelectedTask(task); //
+    setIsModalOpen(true);
+  };
 
 const formatDate = (dateString: string | null) => { 
     if (!dateString) return "No due date";
@@ -22,8 +31,6 @@ const formatDate = (dateString: string | null) => {
     }
   };
 
-
-
   return (
    <div>
       <div className="flex justify-center w-full px-4">
@@ -31,9 +38,9 @@ const formatDate = (dateString: string | null) => {
           
           <div className="divide-y divide-gray-100">
             {Array.isArray(tasks) && tasks.map((task: ProjectTask) => (
-              <div 
-                key={task.id || task.task_id} // 🌟 
-                className="flex flex-col gap-4 p-6 md:grid md:grid-cols-3 md:items-center md:px-6 md:py-4 hover:bg-gray-50/50 transition-colors"
+              <div onClick={() => handleOpenTaskDetails(task)}
+                key={task.id || task.task_id} 
+                className="flex flex-col gap-4 p-6 md:grid md:grid-cols-3  cursor-pointer md:items-center md:px-6 md:py-4 hover:bg-gray-50/50 transition-colors"
               >
                
                 <div className="md:col-span-2 flex flex-col gap-2">
@@ -67,7 +74,20 @@ const formatDate = (dateString: string | null) => {
 
         </div>
       </div>
-    </div>
-  );
-}
+
+
+  {selectedTask && (
+          <TaskDetailsCard
+            task={selectedTask}
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+              setSelectedTask(null);
+              setIsLoadingTask(false);
+            }}
+          />
+        )}
+      </div>
+    );
+  }
   

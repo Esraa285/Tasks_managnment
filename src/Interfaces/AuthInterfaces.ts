@@ -110,14 +110,30 @@ export interface Assignee {
   sub: string
   name: string
   email: string
-  department: string
+  department: string,
+   role: string
 }
 
 export interface ProjectMember{
-  id: string;
-  name: string;
+  email: string;
+  member_id: string; 
+  project_id: string; 
+  user_id: string;    
+  role: 'owner' | 'member' | 'admin' | string; 
+  metadata: MemberMetadata;
   avatar_url?: string;
+  }
+
+ export interface MemberMetadata {
+  department?: string;
+  email: string;
+  email_verified: boolean;
+  name: string;
+  phone_verified: boolean;
+  sub: string; 
 }
+
+
 
 export interface TaskInterface{
   projectId: string;
@@ -142,4 +158,5 @@ export interface ProjectTask {
   assignee: Assignee | null; 
   created_by: CreatedBy;
   epic: ProjectEpic | null;  
+  reporter: Assignee | null
 }

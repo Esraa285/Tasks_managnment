@@ -1,6 +1,6 @@
-
+'use client'
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { ProjectMember, TaskInterface } from "@/Interfaces/AuthInterfaces";
 import { AddTask } from "@/actions/actions";
@@ -16,22 +16,35 @@ export const createTaskSchema = z.object({
 });
 
 
-export default function AddTaskForm({ projectId, projectMembers, epics, initialEpicId ,onSubmit,onCancel,isLoading}: TaskInterface) {
+export default function AddTaskForm({ projectMembers, epics, initialEpicId ,onSubmit,onCancel,isLoading}: TaskInterface) {
+ 
+
+  const searchParams = useSearchParams();
+  const statusFromUrl = searchParams.get('status') || ''; 
+  
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     title: "",
-    status: "TO_DO",
+    status: statusFromUrl || "TO_DO",
     assignee_id: "",
     epic_id: initialEpicId || "",
     due_date: "",
     description: "",
   });
 
+
   useEffect(() => {
     if (initialEpicId) {
       setFormData((prev) => ({ ...prev, epic_id: initialEpicId }));
     }
   }, [initialEpicId]);
+
+    useEffect(() => {
+    if (statusFromUrl) {
+      setFormData((prev) => ({ ...prev, status: statusFromUrl }));
+    }
+  }, [statusFromUrl]);
+  
 
   const formatEpicLabel = (epic: any) => {
     const label = `${epic.epic_id} ${epic.title}`;
@@ -67,6 +80,8 @@ export default function AddTaskForm({ projectId, projectMembers, epics, initialE
   assignee: formData.assignee_id ? { id: formData.assignee_id } : null,
 });
   };
+  console.log(projectMembers);
+  
 
   return (
     <form onSubmit={handleFormSubmit} className="space-y-6">
@@ -109,13 +124,12 @@ export default function AddTaskForm({ projectId, projectMembers, epics, initialE
           >
             <option value="">Select Team Member</option>
             {projectMembers.map((member , index) => (
-              <option key={member.id || index} value={member.id}>{member.name}</option>
+              <option key={member.member_id || index} value={member.user_id}>{member.metadata?.name}</option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Epic */}
       <div>
         <label className="block text-[11px] font-bold text-black uppercase tracking-wider mb-2">Epic</label>
         <select
@@ -130,7 +144,6 @@ export default function AddTaskForm({ projectId, projectMembers, epics, initialE
         </select>
       </div>
 
-      {/* Due Date */}
       <div>
         <label className="block text-[11px] font-bold text-black uppercase tracking-wider mb-2">Due Date</label>
         <input

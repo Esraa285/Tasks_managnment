@@ -39,8 +39,8 @@ export default function ProjectCard({id, name, description, created_at }: Projec
         <Link 
             href={`/project/${id}/edit`}
             title="Edit Project"
-            className=" absolute top-0 right-0 p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 shrink-0"
-          >
+            className=" absolute top-0 right-0 p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50
+             rounded-xl transition-all duration-200 shrink-0">
             <FiEdit3 className="w-4 h-4" />
           </Link>
       </div>
