@@ -25,7 +25,6 @@ export default function PaginButton() {
       const response = await fetchProjects(currentPage, limit); 
 
       if (isMounted && response) {
-        // التأكد من قراءة البيانات سواء جاءت مصفوفة مباشرة أو كائن
         const fetchedData = Array.isArray(response) ? response : response.data;
         const count = response.totalCount || fetchedData?.length || 0;
 
@@ -89,7 +88,7 @@ export default function PaginButton() {
       ))}
     </div>
 
-    {/* زر التالي > */}
+   
     <button
       onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
       disabled={currentPage === totalPages || loading}

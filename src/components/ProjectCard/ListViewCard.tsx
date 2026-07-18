@@ -1,13 +1,15 @@
 "use client";
 
-import { fetchProjectTaskListView } from "@/actions/actions";
 import { ProjectTask } from "@/Interfaces/AuthInterfaces";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import TaskDetailsCard from "./TaskDetailsCard";
+import PaginTaskListViewButton from "../PaginationButton/PaginListTaskView";
 
-export default function ListViewTaskCard({ tasks }: { tasks: ProjectTask[] }) {
+export default function ListViewTaskCard({ tasks,totalCount, currentPage, limit,onPageChange }: { tasks: ProjectTask[],totalCount: number,
+  limit: number,currentPage: number,onPageChange: (page: number) => void,loading: boolean; }) {
+
   const [selectedTask, setSelectedTask] = useState<ProjectTask | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingTask, setIsLoadingTask] = useState(false);
@@ -119,6 +121,19 @@ export default function ListViewTaskCard({ tasks }: { tasks: ProjectTask[] }) {
               </tr>
             ))}
           </tbody>
+          <tfoot>
+             <tr>
+  
+    <td colSpan={6} className="p-0">
+      <PaginTaskListViewButton totalCount={totalCount} 
+                  limit={limit} 
+                  currentPage={currentPage}
+                  onPageChange={onPageChange}
+                  loading={isLoadingTask}/>
+    </td>
+  </tr>
+          </tfoot>
+          
         </table>
       </div>
 

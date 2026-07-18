@@ -107,7 +107,7 @@ export default function BoardView({ projectId, status, onAddTaskClick }: {projec
         )}
 
         {!isLoading &&
-          tasks.map((task) => <BoardCard key={task.id} task={task} onCardClick={handleOpenTaskDetails}/>)}
+          tasks.map((task) => <BoardCard key={task.id} projectId={task.project_id} task={task} onCardClick={handleOpenTaskDetails}/>)}
       </div>
 
  {currentTaskId && selectedTask && (

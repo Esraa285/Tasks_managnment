@@ -68,6 +68,8 @@ export default async function Projects() {
               name={project.name}
               description={project.description || "No description"}
               created_at={project.created_at}
+              created_by={project.created_by}
+
             />
           ))}
           </div>

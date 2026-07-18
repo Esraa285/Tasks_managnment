@@ -7,7 +7,7 @@ export default function SearchTask() {
        <div className='flex justify-around gap-1 p-1 items-center'>
          <AddIconsearch/>
        <div>
-         <input  type="search" placeholder='Search tasks...' className='flex items-center  '/>
+         <input  type="search" placeholder='Search tasks...' className='flex items-center focus:outline-none '/>
       
        </div>
        </div>

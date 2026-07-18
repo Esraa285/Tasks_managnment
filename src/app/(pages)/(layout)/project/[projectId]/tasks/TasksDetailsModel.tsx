@@ -6,14 +6,8 @@ import { ProjectTask } from '@/Interfaces/AuthInterfaces';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-export default function TaksDetailsModel({OnClose} :{OnClose :() => void}) {
+export default function TaksDetailsModel({task,onClose} :{task :ProjectTask ,onClose :() => void}) {
 
-//     const searchParams= useSearchParams()
-//     const projectId = searchParams.get('projectId')
-//        const task_id = searchParams.get('task_id')
-
-
- const [task, setTask] = useState<ProjectTask>();
  const [isLoading, setIsLoading] = useState(true);
 
 
@@ -35,6 +29,6 @@ export default function TaksDetailsModel({OnClose} :{OnClose :() => void}) {
 
  
   return (
-     <TaskDetailsCard task={task} onClose={OnClose}/>
+     <TaskDetailsCard task={task} onClose={onClose}/>
   )
 }
